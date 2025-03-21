@@ -33,18 +33,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User loginUser(String email, String password) {
+    public Optional<User> loginUser(String email, String password) {
         Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isEmpty()) {
-            throw new RuntimeException("User not found!");
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                return Optional.of(user);
+            }
         }
-
-        User savedUser = userOptional.get();
-        if (!passwordEncoder.matches(password, savedUser.getPassword())) {
-            throw new RuntimeException("Invalid password!");
-        }
-
-        return savedUser;
+        return Optional.empty();
     }
 
     public Optional<User> getUserByEmail(String email) {

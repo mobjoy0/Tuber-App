@@ -6,6 +6,8 @@ import com.project.Tuber_backend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -27,13 +29,16 @@ public class UserController {
         }
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest) {
         try {
-            User savedUser = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
-            return ResponseEntity.ok("User registered successfully! ID: " + savedUser.getId());
+            Optional<User> user = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
+
+            return user.map(value -> ResponseEntity.ok("Login successful! User ID: " + value.getId())).orElseGet(() -> ResponseEntity.status(401).body("Invalid email or password"));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+
 }
