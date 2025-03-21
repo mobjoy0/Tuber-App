@@ -40,5 +40,59 @@ public class UserController {
         }
     }
 
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<User> getUserProfile(@PathVariable int id) {
+        Optional<User> userOpt = userService.getUserById(id);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setPassword(null);
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/profile/update/{id}")
+    public ResponseEntity<User> updateUserProfile(@PathVariable int id, @RequestBody User updatedUserDetails) {
+        Optional<User> userOpt = userService.getUserById(id);
+        System.out.println("USER:"+userOpt);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+
+            // Update only the fields that are provided in the request
+            if (updatedUserDetails.getEmail() != null) {
+
+                user.setEmail(updatedUserDetails.getEmail());
+            }
+            if (updatedUserDetails.getUserImage() != null) {
+                user.setUserImage(updatedUserDetails.getUserImage());
+            }
+
+            if (updatedUserDetails.getPhoneNumber() != null) {
+                String phoneNumber = updatedUserDetails.getPhoneNumber();
+
+                // Check if phone number is 10 digits long
+                if (phoneNumber.length() != 10) {
+                    return ResponseEntity.status(400).body(null);
+                }
+
+                // Check if the phone number contains only digits
+                if (!phoneNumber.matches("\\d{10}")) {
+                    return ResponseEntity.status(400).body(null);
+                }
+
+                // Update the phone number
+                user.setPhoneNumber(phoneNumber);
+            }
+
+
+            // Save the updated user details
+            userService.save(user);
+
+            return ResponseEntity.ok(null);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 }
