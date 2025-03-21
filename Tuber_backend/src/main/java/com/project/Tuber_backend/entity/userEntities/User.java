@@ -1,11 +1,10 @@
-package com.project.Tuber_backend.entity;
+package com.project.Tuber_backend.entity.userEntities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import java.time.LocalDate;
 

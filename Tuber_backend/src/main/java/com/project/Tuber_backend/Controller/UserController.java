@@ -1,8 +1,8 @@
 package com.project.Tuber_backend.Controller;
 
-import com.project.Tuber_backend.entity.User;
+import com.project.Tuber_backend.entity.userEntities.LoginRequest;
+import com.project.Tuber_backend.entity.userEntities.User;
 import com.project.Tuber_backend.service.UserService;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +21,16 @@ public class UserController {
         try {
             System.out.println("USER:"+user.getEmail());
             User savedUser = userService.registerUser(user);
+            return ResponseEntity.ok("User registered successfully! ID: " + savedUser.getId());
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest) {
+        try {
+            User savedUser = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
             return ResponseEntity.ok("User registered successfully! ID: " + savedUser.getId());
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

@@ -1,6 +1,6 @@
 package com.project.Tuber_backend.repository;
 
-import com.project.Tuber_backend.entity.User;
+import com.project.Tuber_backend.entity.userEntities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

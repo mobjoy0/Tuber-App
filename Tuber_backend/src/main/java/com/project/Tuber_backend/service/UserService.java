@@ -1,7 +1,8 @@
 package com.project.Tuber_backend.service;
 
-import com.project.Tuber_backend.entity.User;
+import com.project.Tuber_backend.entity.userEntities.User;
 import com.project.Tuber_backend.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -10,9 +11,11 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;// Secure password hashing
+        this.userRepository = userRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     public User registerUser(User user) {
@@ -24,20 +27,27 @@ public class UserService {
             throw new RuntimeException("Phone number already in use!");
         }
 
-        // Hash the password before saving
-        user.setPassword((user.getPassword()));
-
-        // Set default verification status
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setVerified(false);
 
         return userRepository.save(user);
     }
 
-    public Optional<User> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public User loginUser(String email, String password) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isEmpty()) {
+            throw new RuntimeException("User not found!");
+        }
+
+        User savedUser = userOptional.get();
+        if (!passwordEncoder.matches(password, savedUser.getPassword())) {
+            throw new RuntimeException("Invalid password!");
+        }
+
+        return savedUser;
     }
 
-    public Optional<User> getUserByPhoneNumber(String phone) {
-        return userRepository.findByPhoneNumber(phone);
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
