@@ -34,6 +34,7 @@ public class RideService {
             Ride ride = rideOptional.get();
             if (ride.getAvailableSeats() >= seats) {
                 ride.setAvailableSeats(ride.getAvailableSeats() - seats);
+                System.out.println("Available seats: " + ride.getAvailableSeats());
                 rideRepo.save(ride);
             } else {
                 throw new RuntimeException("Not enough seats available!");

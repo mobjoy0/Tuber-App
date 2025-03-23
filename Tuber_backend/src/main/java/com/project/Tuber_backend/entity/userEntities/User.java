@@ -1,5 +1,7 @@
 package com.project.Tuber_backend.entity.userEntities;
 
+import com.project.Tuber_backend.entity.rideEntities.Booking;
+import com.project.Tuber_backend.repository.BookingRepo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +10,7 @@ import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -84,6 +87,15 @@ public class User {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         this.password = passwordEncoder.encode(password);
     }
+
+    public boolean canBookRide(Booking booking, BookingRepo bookingRepo) {
+        boolean hasConfirmedBooking = !bookingRepo.findBookingByPassengerIdAndStatus(this.id, Booking.BookingStatus.CONFIRMED).isEmpty();
+        boolean alreadyBookedThisRide = bookingRepo.findBookingByRideIdAndPassengerId(booking.getRide().getId(), this.id) != null;
+        int bookingCount = bookingRepo.findBookingByPassengerIdAndStatus(this.id, Booking.BookingStatus.PENDING).size();
+
+        return !hasConfirmedBooking && !alreadyBookedThisRide && bookingCount < 3;
+    }
+
 
 
 
