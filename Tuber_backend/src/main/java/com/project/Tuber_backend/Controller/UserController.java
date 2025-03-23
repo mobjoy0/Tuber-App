@@ -55,13 +55,11 @@ public class UserController {
     @PutMapping("/profile/update/{id}")
     public ResponseEntity<User> updateUserProfile(@PathVariable int id, @RequestBody User updatedUserDetails) {
         Optional<User> userOpt = userService.getUserById(id);
-        System.out.println("USER:"+userOpt);
+
         if (userOpt.isPresent()) {
             User user = userOpt.get();
 
-            // Update only the fields that are provided in the request
             if (updatedUserDetails.getEmail() != null) {
-
                 user.setEmail(updatedUserDetails.getEmail());
             }
             if (updatedUserDetails.getUserImage() != null) {
@@ -70,17 +68,14 @@ public class UserController {
 
             if (updatedUserDetails.getPhoneNumber() != null) {
                 String phoneNumber = updatedUserDetails.getPhoneNumber();
-
                 // Check if phone number is 10 digits long
                 if (phoneNumber.length() != 10) {
                     return ResponseEntity.status(400).body(null);
                 }
-
                 // Check if the phone number contains only digits
                 if (!phoneNumber.matches("\\d{10}")) {
                     return ResponseEntity.status(400).body(null);
                 }
-
                 // Update the phone number
                 user.setPhoneNumber(phoneNumber);
             }
@@ -90,6 +85,20 @@ public class UserController {
             userService.save(user);
 
             return ResponseEntity.ok(null);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PatchMapping("/profile/change-password/{id}")
+    public ResponseEntity<String> changePassword(@PathVariable int id, @RequestBody String newPassword) {
+        Optional<User> userOpt = userService.getUserById(id);
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.changePassword(newPassword);
+            userService.save(user);
+            return ResponseEntity.ok("Password changed successfully!");
         } else {
             return ResponseEntity.notFound().build();
         }
