@@ -1,11 +1,13 @@
 package com.project.Tuber_backend.entity.rideEntities;
 
+import com.project.Tuber_backend.apis.GoogleMapsApi;
 import com.project.Tuber_backend.entity.userEntities.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -54,6 +56,16 @@ public class Ride {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    // New columns
+    @Column(name = "ETA")
+    private Integer eta; // Estimated Time of Arrival (in minutes)
+
+    @Column(name = "polyline", columnDefinition = "TEXT")
+    private String polyline; // Encoded polyline for the route
+
+    @Column(name = "distance")
+    private Integer distance; // Distance in kilometers
+
     public enum RideStatus {
         SCHEDULED,
         IN_PROGRESS,
@@ -71,5 +83,15 @@ public class Ride {
     @PreUpdate
     public void preUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public void setRouteAndDistanceAndETA(RestTemplate restTemplate) {
+        System.out.println("Setting route, distance, and ETA for ride: " + this.id);
+        GoogleMapsApi googleMapsApi = new GoogleMapsApi(10000, startLocation, endLocation , restTemplate);
+        googleMapsApi.getRideDetails();
+        this.polyline = googleMapsApi.getPolyline();
+        this.distance = googleMapsApi.getDistance();
+        this.eta = googleMapsApi.getETA();
+
     }
 }

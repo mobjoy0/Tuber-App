@@ -6,6 +6,7 @@ import com.project.Tuber_backend.entity.userEntities.Driver;
 import com.project.Tuber_backend.repository.RideRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,16 +14,19 @@ import java.util.Optional;
 @Service
 public class RideService {
     private final RideRepo rideRepo;
+    private final RestTemplate restTemplate;
 
-    public RideService(RideRepo rideRepo) {
+    public RideService(RideRepo rideRepo, RestTemplate restTemplate) {
         this.rideRepo = rideRepo;
+        this.restTemplate = restTemplate;
     }
 
     public Ride createRide(Ride ride) {
 
-        if (!Driver.canDriverCreateNewRide(ride.getDriver().getId(), rideRepo) || !Driver.isDriver(ride.getDriver())) {
+        if (!Driver.canDriverCreateNewRide(ride.getDriver().getId(), ride.getDepartureTime(), rideRepo) || !Driver.isDriver(ride.getDriver())) {
             throw new RuntimeException("an Error gas occurred while trying to create the ride.");
         }
+        ride.setRouteAndDistanceAndETA(restTemplate);
 
         return rideRepo.save(ride);
     }
