@@ -30,13 +30,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<User> loginUser(@RequestBody LoginRequest loginRequest) {
         try {
-            Optional<User> user = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
 
-            return user.map(value -> ResponseEntity.ok("Login successful! User ID: " + value.getId())).orElseGet(() -> ResponseEntity.status(401).body("Invalid email or password"));
+            System.out.println("USER:"+loginRequest.getEmail()+"pass "+loginRequest.getPassword());
+            Optional<User> user = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
+            return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().body(null));
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(null);
         }
     }
 

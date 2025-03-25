@@ -28,6 +28,7 @@ public class UserService {
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         user.setVerified(false);
 
         return userRepo.save(user);
@@ -37,7 +38,11 @@ public class UserService {
         Optional<User> userOptional = userRepo.findByEmail(email);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
+            System.out.println(user.getId());
+
+
             if (passwordEncoder.matches(password, user.getPassword())) {
+                user.setPassword(null);
                 return Optional.of(user);
             }
         }

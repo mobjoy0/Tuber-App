@@ -24,7 +24,7 @@ public class Ride {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "driver_id", referencedColumnName = "userID", nullable = false)
     private User driver;
 
