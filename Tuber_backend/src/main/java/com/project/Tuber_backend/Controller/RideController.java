@@ -4,20 +4,13 @@ package com.project.Tuber_backend.Controller;
 import com.project.Tuber_backend.entity.rideEntities.Ride;
 import com.project.Tuber_backend.repository.RideRepo;
 import com.project.Tuber_backend.service.RideService;
-import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-import org.springframework.data.repository.query.Param;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RestController
@@ -43,11 +36,11 @@ public class RideController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Ride>> searchRides(@RequestParam String origin,
-                                                  @RequestParam String destination,
+    public ResponseEntity<List<Ride>> searchRides(@RequestParam @NotBlank String origin,
+                                                  @RequestParam @NotBlank String destination,
                                                   @RequestParam LocalDateTime departureTime,
-                                                  @RequestParam(defaultValue = "24") int hoursOffset,
-                                                  @RequestParam(required = false) BigDecimal maxPrice) {
+                                                  @RequestParam(defaultValue = "24") @Positive int hoursOffset,
+                                                  @RequestParam(required = false) @Positive BigDecimal maxPrice) {
         try {
             List<Ride> anyride = rideRepo.searchAvailableRides(origin,
                     destination,

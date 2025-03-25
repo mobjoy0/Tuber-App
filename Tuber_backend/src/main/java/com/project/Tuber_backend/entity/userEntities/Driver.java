@@ -2,9 +2,7 @@ package com.project.Tuber_backend.entity.userEntities;
 
 import com.project.Tuber_backend.repository.RideRepo;
 import com.project.Tuber_backend.entity.rideEntities.Ride;
-import com.project.Tuber_backend.repository.UserRepo;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 

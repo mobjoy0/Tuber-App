@@ -1,7 +1,6 @@
 package com.project.Tuber_backend.repository;
 
 import com.project.Tuber_backend.entity.rideEntities.Ride;
-import com.project.Tuber_backend.entity.userEntities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,8 +29,8 @@ public interface RideRepo extends JpaRepository<Ride, Integer> {
     List<Ride> searchAvailableRides(
             @Param("startLocation") String startLocation,
             @Param("endLocation") String endLocation,
-            @Param("minDepartureTime") LocalDateTime minDepartureTime,  // Fixed name to match parameter
-            @Param("maxDepartureTime") LocalDateTime maxDepartureTime,  // Fixed name to match parameter
+            @Param("minDepartureTime") LocalDateTime minDepartureTime,
+            @Param("maxDepartureTime") LocalDateTime maxDepartureTime,
             @Param("maxPrice") BigDecimal maxPrice
     );
 
