@@ -23,7 +23,10 @@ public class BookingService {
         if (!booking.getPassenger().canBookRide(booking,bookingRepo)){
             throw new RuntimeException("an Error gas occurred while trying to create the booking.");
         }
-        rideService.reserveSeats(booking.getRide().getId(), booking.getSeatsBooked());
+        System.out.println(booking.getRide().getAvailableSeats());
+        if (booking.getRide().getAvailableSeats() < booking.getSeatsBooked()){
+            throw new RuntimeException("not enough seats.");
+        }
 
         bookingRepo.save(booking);
     }
@@ -33,6 +36,7 @@ public class BookingService {
         if (booking != null) {
             if (status.equals("CONFIRMED")){
 
+                rideService.reserveSeats(booking.getId(), booking.getSeatsBooked());
                 List<Booking> pendingBookings = bookingRepo.findBookingByPassengerIdAndStatus(booking.getPassenger().getId(),
                         Booking.BookingStatus.PENDING);
 

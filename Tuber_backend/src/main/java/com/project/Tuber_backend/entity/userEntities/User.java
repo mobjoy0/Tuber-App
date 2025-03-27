@@ -7,10 +7,15 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "users")
@@ -19,7 +24,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -75,6 +80,36 @@ public class User {
     @Column(name = "user_image")
     private byte[] userImage;
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return UserDetails.super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return UserDetails.super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
+    }
+
     public enum Gender {
         MALE, FEMALE
     }
@@ -94,6 +129,32 @@ public class User {
         int bookingCount = bookingRepo.findBookingByPassengerIdAndStatus(this.id, Booking.BookingStatus.PENDING).size();
 
         return !hasConfirmedBooking && !alreadyBookedThisRide && bookingCount < 3;
+    }
+
+    public ResponseEntity<String> updateUserInfo(User updatedUserDetails){
+
+        if (updatedUserDetails.getEmail() != null) {
+            email = updatedUserDetails.getEmail();
+        }
+        if (updatedUserDetails.getUserImage() != null) {
+            userImage = updatedUserDetails.getUserImage();
+        }
+
+        if (updatedUserDetails.getPhoneNumber() != null) {
+            String newPhoneNumber = updatedUserDetails.getPhoneNumber();
+
+            if (newPhoneNumber.length() != 10) {
+                return ResponseEntity.status(400).body("Phone number must be 10 digits");
+            }
+            // Check if the phone number contains only digits
+            if (!newPhoneNumber.matches("\\d{10}")) {
+                return ResponseEntity.status(400).body("Phone number cant contain characters");
+            }
+            // Update the phone number
+            phoneNumber = updatedUserDetails.getPhoneNumber();
+        }
+
+        return ResponseEntity.ok().body("User updated successfully");
     }
 
 

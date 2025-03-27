@@ -26,7 +26,7 @@ public class RideService {
         if (!Driver.canDriverCreateNewRide(ride.getDriver().getId(), ride.getDepartureTime(), rideRepo) || !Driver.isDriver(ride.getDriver())) {
             throw new RuntimeException("an Error gas occurred while trying to create the ride.");
         }
-        ride.setRouteAndDistanceAndETA(restTemplate);
+        //ride.setRouteAndDistanceAndETA(restTemplate);
 
         return rideRepo.save(ride);
     }

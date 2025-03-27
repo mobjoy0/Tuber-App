@@ -2,6 +2,7 @@ package com.project.Tuber_backend.Controller;
 
 import com.project.Tuber_backend.entity.userEntities.LoginRequest;
 import com.project.Tuber_backend.entity.userEntities.User;
+import com.project.Tuber_backend.service.JwtService;
 import com.project.Tuber_backend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,37 +14,21 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final JwtService jwtService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JwtService jwtService) {
         this.userService = userService;
+        this.jwtService = jwtService;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
-        try {
-            System.out.println("USER:"+user.getEmail());
-            User savedUser = userService.registerUser(user);
-            return ResponseEntity.ok("User registered successfully! ID: " + savedUser.getId());
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 
-    @PostMapping("/login")
-    public ResponseEntity<User> loginUser(@RequestBody LoginRequest loginRequest) {
-        try {
 
-            System.out.println("USER:"+loginRequest.getEmail()+"pass "+loginRequest.getPassword());
-            Optional<User> user = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
-            return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().body(null));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
-    }
+    @GetMapping("/profile")
+    public ResponseEntity<User> getUserProfile(@RequestHeader("Authorization") String authHeader) {
 
-    @GetMapping("/profile/{id}")
-    public ResponseEntity<User> getUserProfile(@PathVariable int id) {
-        Optional<User> userOpt = userService.getUserById(id);
+        String email = jwtService.extractEmailFromToken(authHeader);
+        Optional<User> userOpt = userService.getUserByEmail(email);
+
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             user.setPassword(null);
@@ -53,47 +38,34 @@ public class UserController {
         }
     }
 
-    @PutMapping("/profile/update/{id}")
-    public ResponseEntity<User> updateUserProfile(@PathVariable int id, @RequestBody User updatedUserDetails) {
-        Optional<User> userOpt = userService.getUserById(id);
+    @PutMapping("/profile/update")
+    public ResponseEntity<String> updateUserProfile(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody User updatedUserDetails) {
 
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-
-            if (updatedUserDetails.getEmail() != null) {
-                user.setEmail(updatedUserDetails.getEmail());
-            }
-            if (updatedUserDetails.getUserImage() != null) {
-                user.setUserImage(updatedUserDetails.getUserImage());
-            }
-
-            if (updatedUserDetails.getPhoneNumber() != null) {
-                String phoneNumber = updatedUserDetails.getPhoneNumber();
-                // Check if phone number is 10 digits long
-                if (phoneNumber.length() != 10) {
-                    return ResponseEntity.status(400).body(null);
-                }
-                // Check if the phone number contains only digits
-                if (!phoneNumber.matches("\\d{10}")) {
-                    return ResponseEntity.status(400).body(null);
-                }
-                // Update the phone number
-                user.setPhoneNumber(phoneNumber);
-            }
-
-
-            // Save the updated user details
-            userService.save(user);
-
-            return ResponseEntity.ok(null);
-        } else {
+        String email = jwtService.extractEmailFromToken(authHeader);
+        Optional<User> userOpt = userService.getUserByEmail(email);
+        if (!userOpt.isPresent()) {
             return ResponseEntity.notFound().build();
         }
+
+        // 3. Update user info
+        User user = userOpt.get();
+        ResponseEntity<String> response = user.updateUserInfo(updatedUserDetails);
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            userService.save(user);
+            return response;
+        }
+        return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     }
 
-    @PatchMapping("/profile/change-password/{id}")
-    public ResponseEntity<String> changePassword(@PathVariable int id, @RequestBody String newPassword) {
-        Optional<User> userOpt = userService.getUserById(id);
+    @PatchMapping("/profile/change-password")
+    public ResponseEntity<String> changePassword(@RequestHeader("Authorization") String authHeader,
+                                                 @RequestBody String newPassword) {
+
+        String email = jwtService.extractEmailFromToken(authHeader);
+        Optional<User> userOpt = userService.getUserByEmail(email);
 
         if (userOpt.isPresent()) {
             User user = userOpt.get();

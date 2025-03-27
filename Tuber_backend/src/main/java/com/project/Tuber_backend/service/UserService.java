@@ -2,13 +2,16 @@ package com.project.Tuber_backend.service;
 
 import com.project.Tuber_backend.entity.userEntities.User;
 import com.project.Tuber_backend.repository.UserRepo;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepo userRepo;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -59,5 +62,11 @@ public class UserService {
 
     public User save(User user) {
         return userRepo.save(user);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }
