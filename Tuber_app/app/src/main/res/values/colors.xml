@@ -7,4 +7,32 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="barChat_colorPrimary">#6200EE</color>
+    <color name="barChat_colorAccent">#03DAC5</color>
+    <color name="orange">#ffa500</color>
+    <color name="cream">#f1e1ce</color>
+    <color name="gray">#222222</color>
+    <color name="green">#008000</color>
+    <color name="rosish_red">#e19578</color>
+    <color name="redish_brown">#a76d60</color>
+    <color name="greenish_yellow">#7f7129</color>
+    <color name="darkish_blue">#22223b</color>
+    <color name="grayish">#00a676</color>
+    <color name="presque_white">#f7f9f9</color>
+    <color name="soft_cream">#efeede</color>
+    <color name="light_purple">#845fe3</color>
+    <color name="mount_pink">#847996</color>
+    <color name="cambrige_blue">#88b7b5</color>
+    <color name="light_cambrige_blue">#a7cab1</color>
+    <color name="dark_purple">#1b163f</color>
+    <color name="darkish_purple">#2a215a</color>
+    <color name="paynes_gray">#4f646f</color>
+    <color name="night_blue">#151b54</color>
+    <color name="blueCherry">#0041c2</color>
+    <color name="Dodger_blue">#1e90ff</color>
+    <color name="grayish_white">#d7d7d7</color>
+    <color name="cherry_red">#ad011d</color>
+    <color name="static_textcolor">#540b01</color>
+    <color name="darkred">#333311</color>
+
 </resources>
