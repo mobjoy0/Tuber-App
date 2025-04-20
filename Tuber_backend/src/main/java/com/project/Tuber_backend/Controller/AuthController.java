@@ -1,6 +1,7 @@
 package com.project.Tuber_backend.Controller;
 
 import com.project.Tuber_backend.entity.userEntities.LoginRequest;
+import com.project.Tuber_backend.entity.userEntities.LoginResponse;
 import com.project.Tuber_backend.entity.userEntities.User;
 import com.project.Tuber_backend.service.JwtService;
 import com.project.Tuber_backend.service.UserService;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -27,17 +30,23 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+        System.out.println("login:"+request.getEmail()+" "+request.getPassword());
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
-        UserDetails user = userDetailsService.loadUserByUsername(request.getEmail());
-        System.out.println("emaim="+user.getUsername());
-        String jwt = jwtService.generateToken(user);
-        return ResponseEntity.ok(jwt);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+        User user = userService.getExistingUserByEmail(request.getEmail());
+
+        System.out.println("user="+userDetails);
+        System.out.println("emaim="+userDetails.getUsername());
+        String jwt = jwtService.generateToken(userDetails);
+
+        LoginResponse response = new LoginResponse(jwt, user);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/register")

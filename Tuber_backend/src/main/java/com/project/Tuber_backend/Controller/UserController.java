@@ -1,6 +1,5 @@
 package com.project.Tuber_backend.Controller;
 
-import com.project.Tuber_backend.entity.userEntities.LoginRequest;
 import com.project.Tuber_backend.entity.userEntities.User;
 import com.project.Tuber_backend.service.JwtService;
 import com.project.Tuber_backend.service.UserService;

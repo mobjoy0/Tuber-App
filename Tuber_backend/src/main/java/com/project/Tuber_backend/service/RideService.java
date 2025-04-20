@@ -4,10 +4,15 @@ package com.project.Tuber_backend.service;
 import com.project.Tuber_backend.entity.rideEntities.Ride;
 import com.project.Tuber_backend.entity.userEntities.Driver;
 import com.project.Tuber_backend.repository.RideRepo;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,10 +74,6 @@ public class RideService {
         return rideRepo.save(ride);
     }
 
-    public Optional<Ride> getRideById(int id) {
-        return rideRepo.findRidesById(id);
-    }
-
     public Optional<Ride> getRideByDriverIdAndStatus(int driverId, Ride.RideStatus status) {
         return rideRepo.findRidesByDriverIdAndStatus(driverId, status);
     }
@@ -88,6 +89,28 @@ public class RideService {
         }else {
             return rides;
         }
+    }
+
+    public Ride getRideById(int id){
+        return rideRepo.findRidesById(id).orElseThrow(() -> new RuntimeException("Ride not found!"));
+    }
+
+    public List<Ride> getAvailableRides(String origin,
+                                        String destination,
+                                        LocalDateTime departureTime,
+                                        int hoursOffset,
+                                        BigDecimal maxPrice){
+        List<Ride> rides = rideRepo.searchAvailableRides(origin,
+                destination,
+                departureTime,
+                departureTime.plusHours(hoursOffset),
+                maxPrice);
+        for(Ride ride : rides){
+            ride.getDriver().setPassword(null);
+            ride.getDriver().setCin(null);
+            ride.getDriver().setEmail(null);
+        }
+        return rides;
     }
 
 

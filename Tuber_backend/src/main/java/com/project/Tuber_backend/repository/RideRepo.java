@@ -25,7 +25,8 @@ public interface RideRepo extends JpaRepository<Ride, Integer> {
             + "(LOWER(r.startLocation) LIKE LOWER(CONCAT('%', :startLocation, '%'))) AND "
             + "(LOWER(r.endLocation) LIKE LOWER(CONCAT('%', :endLocation, '%'))) AND "
             + "r.departureTime BETWEEN :minDepartureTime AND :maxDepartureTime "
-            + "AND (:maxPrice IS NULL OR r.price <= :maxPrice)")
+            + "AND (:maxPrice IS NULL OR r.price <= :maxPrice)" +
+            " ORDER BY r.departureTime ASC")
     List<Ride> searchAvailableRides(
             @Param("startLocation") String startLocation,
             @Param("endLocation") String endLocation,

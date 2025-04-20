@@ -98,4 +98,18 @@ public class BookingController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/get-booking")
+    public ResponseEntity<Booking> getBooking(@RequestHeader("Authorization") String authHeader){
+        String email = jwtService.extractEmailFromToken(authHeader);
+        User user = userService.getUserByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
+
+        List<Booking> bookings = bookingRepo.findBookingByPassengerIdAndStatus(user.getId(), Booking.BookingStatus.CONFIRMED);
+        if (bookings.isEmpty()){
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(bookings.getFirst());
+        }
+    }
 }

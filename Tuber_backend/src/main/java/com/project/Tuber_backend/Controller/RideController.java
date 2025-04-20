@@ -9,6 +9,7 @@ import com.project.Tuber_backend.service.RideService;
 import com.project.Tuber_backend.service.UserService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +17,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/rides")
@@ -63,22 +64,35 @@ public class RideController {
                                                   @RequestParam(defaultValue = "24") @Positive int hoursOffset,
                                                   @RequestParam(required = false) @Positive BigDecimal maxPrice) {
         try {
-            List<Ride> anyride = rideRepo.searchAvailableRides(origin,
-                    destination,
-                    departureTime,
-                    departureTime.plusHours(hoursOffset),
-                    maxPrice);
-            for(Ride ride : anyride){
-                ride.getDriver().setPassword(null);
-                ride.getDriver().setCin(null);
-                ride.getDriver().setEmail(null);
-            }
-            return ResponseEntity.ok(anyride);
+            System.out.println("here");
+            List<Ride> rides = rideService.getAvailableRides(origin, destination, departureTime, hoursOffset, maxPrice);
+            System.out.println(rides.size());
+            System.out.println(rides.getFirst().getDriver().getPassword());
+            return ResponseEntity.ok(rides);
         } catch (Exception e) {
             System.out.println("erro:" + e.getMessage());
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().body(Collections.emptyList());
         }
 
 
+    }
+
+    @PutMapping("/change-status/{id}/{status}")
+    public ResponseEntity<String> changeRideStatus(@PathVariable int id, @PathVariable String status){
+        rideService.changeRideStatus(id, status);
+        return ResponseEntity.ok("Ride "+status+ " successfully");
+    }
+
+    @GetMapping("/getRideByDriver")
+    public ResponseEntity<Ride> getRideByDriver(@RequestHeader("Authorization") String authHeader){
+        String email = jwtService.extractEmailFromToken(authHeader);
+        User user = userService.getUserByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
+
+        Ride ride = rideService.getRideByDriverIdAndStatus(user.getId(), Ride.RideStatus.SCHEDULED)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No pending rides found for this driver"));
+        ride.getDriver().setPassword(null);
+
+        return ResponseEntity.ok(ride);
     }
 }

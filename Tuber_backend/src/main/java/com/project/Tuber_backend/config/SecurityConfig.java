@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Allow login/register
-                        .anyRequest().authenticated() // Secure all other endpoints
+                        .anyRequest().authenticated() // Secure all other
                 )
                 .sessionManagement(sess -> sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // JWT is stateless
@@ -41,7 +41,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // For password hashing
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
