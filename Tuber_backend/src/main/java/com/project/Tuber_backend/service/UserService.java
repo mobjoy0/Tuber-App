@@ -55,6 +55,7 @@ public class UserService implements UserDetailsService {
     public Optional<User> getUserByEmail(String email) {
         return userRepo.findByEmail(email);
     }
+
     public User getExistingUserByEmail(String email) {
         return userRepo.getUserByEmail(email);
     }

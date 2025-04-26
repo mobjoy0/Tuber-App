@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/api/booking")
 public class BookingController {
@@ -59,6 +60,7 @@ public class BookingController {
     private ResponseEntity<List<Booking>> retrievePendingBookings(@RequestParam int rideId){
         try {
             List<Booking> pendingRequests = bookingRepo.findBookingByRideIdAndStatus(rideId, Booking.BookingStatus.PENDING);
+            System.out.println("pending= "+ pendingRequests.size());
             return ResponseEntity.ok(pendingRequests);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(null);
@@ -69,13 +71,15 @@ public class BookingController {
     private ResponseEntity<List<Booking>> retrieveConfirmedBookings(@RequestParam int rideId){
         try {
             List<Booking> pendingRequests = bookingRepo.findBookingByRideIdAndStatus(rideId, Booking.BookingStatus.CONFIRMED);
+            System.out.println("comfired= "+ pendingRequests.size());
             return ResponseEntity.ok(pendingRequests);
         } catch (RuntimeException e) {
+            System.out.println("error= "+ e.getMessage());
             return ResponseEntity.badRequest().body(null);
         }
     }
 
-    @PutMapping("/change-status")
+    @PutMapping("/update-status")
     public ResponseEntity<String> cancelBooking(@RequestHeader("Authorization") String authHeader,
                                                 @RequestParam int bookingId,
                                                 @RequestParam @NotBlank String bookingStatus){
@@ -100,16 +104,18 @@ public class BookingController {
     }
 
     @GetMapping("/get-booking")
-    public ResponseEntity<Booking> getBooking(@RequestHeader("Authorization") String authHeader){
+    public ResponseEntity<List<Booking>> getBooking(@RequestHeader("Authorization") String authHeader, @RequestParam String status){
+        System.out.println("here status=" + status);
         String email = jwtService.extractEmailFromToken(authHeader);
-        User user = userService.getUserByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
-
-        List<Booking> bookings = bookingRepo.findBookingByPassengerIdAndStatus(user.getId(), Booking.BookingStatus.CONFIRMED);
+        User user = userService.getExistingUserByEmail(email);
+        System.out.println("user= "+ user);
+        List<Booking> bookings = bookingRepo.findBookingByPassengerIdAndStatus(user.getId(), Booking.BookingStatus.valueOf(status));
+        System.out.println("booking= "+ bookings.size());
         if (bookings.isEmpty()){
             return ResponseEntity.notFound().build();
         } else {
-            return ResponseEntity.ok(bookings.getFirst());
+
+            return ResponseEntity.ok(bookings);
         }
     }
 }

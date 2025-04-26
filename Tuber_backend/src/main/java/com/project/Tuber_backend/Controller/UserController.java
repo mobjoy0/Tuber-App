@@ -3,9 +3,12 @@ package com.project.Tuber_backend.Controller;
 import com.project.Tuber_backend.entity.userEntities.User;
 import com.project.Tuber_backend.service.JwtService;
 import com.project.Tuber_backend.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @RestController
@@ -75,5 +78,45 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PostMapping("/profile/image/upload")
+    public ResponseEntity<String> changeProfilePic(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestParam("image") MultipartFile file) {
+
+        String email = jwtService.extractEmailFromToken(authHeader);
+        Optional<User> userOpt = userService.getUserByEmail(email);
+
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        try {
+            User user = userOpt.get();
+            user.setUserImage(file.getBytes());
+            userService.save(user);
+
+            return ResponseEntity.ok("Profile picture updated successfully!");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload");
+        }
+    }
+
+    @GetMapping("/profile/image")
+    public ResponseEntity<byte[]> getProfilePic(@RequestHeader("Authorization") String authHeader) {
+        String email = jwtService.extractEmailFromToken(authHeader);
+        Optional<User> userOpt = userService.getUserByEmail(email);
+
+        if (userOpt.isPresent() && userOpt.get().getUserImage() != null) {
+            User user = userOpt.get();
+            return ResponseEntity.ok()
+                    .header("Content-Type", "image/jpeg") // or detect dynamically if you want
+                    .body(user.getUserImage());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 
 }

@@ -66,8 +66,6 @@ public class RideController {
         try {
             System.out.println("here");
             List<Ride> rides = rideService.getAvailableRides(origin, destination, departureTime, hoursOffset, maxPrice);
-            System.out.println(rides.size());
-            System.out.println(rides.getFirst().getDriver().getPassword());
             return ResponseEntity.ok(rides);
         } catch (Exception e) {
             System.out.println("erro:" + e.getMessage());
