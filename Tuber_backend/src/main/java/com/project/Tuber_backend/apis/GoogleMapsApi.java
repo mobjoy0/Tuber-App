@@ -1,5 +1,4 @@
 package com.project.Tuber_backend.apis;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -63,4 +62,5 @@ public class GoogleMapsApi {
         this.ETA = leg.getJSONObject("duration_in_traffic").getInt("value") / 60; // minutes
         this.polyline = route.getJSONObject("overview_polyline").getString("points");
     }
+
 }
