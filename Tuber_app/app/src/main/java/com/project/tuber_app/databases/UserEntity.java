@@ -1,11 +1,15 @@
 package com.project.tuber_app.databases;
 
 
+import android.util.Log;
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.ColumnInfo;
 import androidx.annotation.Nullable;
 import androidx.room.TypeConverters;
+
+import com.project.tuber_app.entities.User;
 
 import java.util.Date;
 
@@ -15,7 +19,7 @@ public class UserEntity {
 
     @PrimaryKey
     @ColumnInfo(name = "userID")
-    public int userId;
+    public int id;
 
     @ColumnInfo(name = "first_name")
     public String firstName;
@@ -57,5 +61,22 @@ public class UserEntity {
 
     public enum Role {
         DRIVER, RIDER
+    }
+
+    public UserEntity(){}
+    public UserEntity(User user) {
+        this.id = user.getId();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.email = user.getEmail();
+        this.phoneNumber = user.getPhoneNumber();
+        this.cin = user.getCin();
+        this.password = user.getPassword();
+        this.gender = user.getGender() != null ? Gender.valueOf(user.getGender().toString()) : null;
+        this.role = user.getRole() != null ? Role.valueOf(user.getRole().toString()) : null;
+        this.verified = user.getVerified();
+        Log.wtf("ee", "bd is :"+ user.getBirthDate());
+        this.birthDate = null;
+        this.userImage = user.getUserImage();
     }
 }

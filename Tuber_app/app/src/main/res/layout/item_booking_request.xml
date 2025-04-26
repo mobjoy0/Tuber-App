@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="4dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#E0E0E0">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rideLayoutView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="16dp">
+
+        <!-- Route Icon -->
+        <ImageView
+            android:id="@+id/routeIcon"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:src="@drawable/ic_car"
+            android:padding="12dp"
+            app:tint="#3F51B5"
+            android:background="@drawable/circular_button_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Route Details - Departure Location -->
+        <TextView
+            android:id="@+id/departureLocationLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="From"
+            android:textSize="12sp"
+            android:textColor="#757575"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toEndOf="@id/routeIcon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/departureLocation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Monastir"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#212121"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toEndOf="@id/routeIcon"
+            app:layout_constraintEnd_toStartOf="@id/seatsLayout"
+            app:layout_constraintTop_toBottomOf="@id/departureLocationLabel" />
+
+        <!-- Route Details - Destination Location -->
+        <TextView
+            android:id="@+id/destinationLocationLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="To"
+            android:textSize="12sp"
+            android:textColor="#757575"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toEndOf="@id/routeIcon"
+            app:layout_constraintTop_toBottomOf="@id/departureLocation" />
+
+        <TextView
+            android:id="@+id/destinationLocation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Tunis"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#212121"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toEndOf="@id/routeIcon"
+            app:layout_constraintEnd_toStartOf="@id/seatsLayout"
+            app:layout_constraintTop_toBottomOf="@id/destinationLocationLabel" />
+
+        <!-- Seats Info -->
+        <LinearLayout
+            android:id="@+id/seatsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="16dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_seat"
+                app:tint="#FF5722" />
+
+            <TextView
+                android:id="@+id/seatsRequested"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#FF5722"
+                android:layout_marginStart="4dp" />
+        </LinearLayout>
+
+        <!-- Time Details Section -->
+        <LinearLayout
+            android:id="@+id/timeDetailsLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="@id/departureLocation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/destinationLocation"
+            android:layout_marginTop="12dp">
+
+            <!-- Departure Time -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_departure"
+                    app:tint="#4CAF50" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Departs:"
+                    android:textSize="12sp"
+                    android:textColor="#757575"
+                    android:layout_marginStart="8dp" />
+
+                <TextView
+                    android:id="@+id/departureTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="8:30 AM, Apr 25"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#4CAF50"
+                    android:layout_marginStart="6dp"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+            </LinearLayout>
+
+            <!-- Arrival Time -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="6dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_arrival"
+                    app:tint="#F44336" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Arrives:"
+                    android:textSize="12sp"
+                    android:textColor="#757575"
+                    android:layout_marginStart="8dp" />
+
+                <TextView
+                    android:id="@+id/arrivalTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10:45 AM, Apr 25"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#F44336"
+                    android:layout_marginStart="6dp"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Status Chip -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/statusChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pending"
+            android:textSize="12sp"
+            android:textColor="#FFFFFF"
+            app:chipBackgroundColor="#FFC107"
+            app:chipIcon="@drawable/ic_pending"
+            app:chipIconTint="#FFFFFF"
+            app:layout_constraintStart_toStartOf="@id/timeDetailsLayout"
+            app:layout_constraintTop_toBottomOf="@id/timeDetailsLayout"
+            android:layout_marginTop="8dp" />
+
+        <!-- Reject Button -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnReject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:tint="#FFFFFF"
+            android:src="@drawable/ic_cancel"
+            app:backgroundTint="#F44336"
+            android:contentDescription="Cancel request"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/timeDetailsLayout"
+            app:layout_constraintBottom_toBottomOf="@id/statusChip" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

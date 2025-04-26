@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <!-- FrameLayout for the main content area -->
-    <androidx.viewpager2.widget.ViewPager2
+    <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/line" />
 
-    <!-- Separator Line -->
+
     <View
         android:id="@+id/line"
         android:layout_width="match_parent"

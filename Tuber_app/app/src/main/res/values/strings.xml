@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Tuber_app</string>
+
+    <string-array name="passenger_array">
+        <item>1 adulte</item>
+        <item>2 adultes</item>
+        <item>3 adultes</item>
+        <item>4 adultes</item>
+    </string-array>
+
 </resources>

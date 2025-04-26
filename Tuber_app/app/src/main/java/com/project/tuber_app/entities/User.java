@@ -1,21 +1,14 @@
-package com.project.tuber_app.activites;
+package com.project.tuber_app.entities;
 
 import com.google.gson.annotations.SerializedName;
+import com.project.tuber_app.databases.UserEntity;
 
-import java.time.LocalDate;
-import java.util.Date;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
-import retrofit2.http.GET;
 
 @ToString
 public class User {
 
-    @SerializedName("userID") private Integer id;
+    private Integer id;
 
     private String firstName;
 
@@ -41,6 +34,10 @@ public class User {
 
     private Role role;
 
+    public User(int id){
+        this.id = id;
+    }
+
     public User(String firstName, String lastName, String email, String phoneNumber,
                 String cin, String password, Gender gender, String birthDate,
                 Role role) {
@@ -53,6 +50,25 @@ public class User {
         this.gender = gender;
         this.birthDate = birthDate;
         this.role = role;
+    }
+
+    public User(UserEntity userEntity) {
+        if (userEntity == null) {
+            throw new IllegalArgumentException("UserEntity cannot be null");
+        }
+
+        this.id = userEntity.id;
+        this.firstName = userEntity.firstName;
+        this.lastName = userEntity.lastName;
+        this.email = userEntity.email;
+        this.phoneNumber = userEntity.phoneNumber;
+        this.cin = userEntity.cin;
+        this.password = userEntity.password;
+        this.gender = userEntity.gender != null ? User.Gender.valueOf(userEntity.gender.toString()) : null;
+        this.verified = userEntity.verified;
+        this.birthDate = null;
+        this.role = userEntity.role != null ? User.Role.valueOf(userEntity.role.toString()) : null;
+        this.userImage = userEntity.userImage;
     }
 
     @SerializedName("user_image") private byte[] userImage;

@@ -12,15 +12,13 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.project.tuber_app.R;
-import com.project.tuber_app.activites.User;
-import com.project.tuber_app.activites.User.Gender;
-import com.project.tuber_app.activites.User.Role;
-import com.project.tuber_app.activites.ApiService;
-import com.project.tuber_app.activites.RetrofitClient;
+import com.project.tuber_app.api.ApiClient;
+import com.project.tuber_app.api.LoginApi;
+import com.project.tuber_app.entities.User;
+import com.project.tuber_app.entities.User.Gender;
+import com.project.tuber_app.entities.User.Role;
+
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,9 +50,6 @@ public class RegisterActivity extends AppCompatActivity {
         roleRadioGroup = findViewById(R.id.radioGroupRole);
         registerButton = findViewById(R.id.buttonRegister);
 
-        // Initialize Retrofit
-        Retrofit retrofit = RetrofitClient.getClient();
-        ApiService apiService = retrofit.create(ApiService.class);
 
         // Set click listener for register button
         registerButton.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +92,7 @@ public class RegisterActivity extends AppCompatActivity {
                 Role role = selectedRoleRadioButton != null && selectedRoleRadioButton.getText().toString().equals("Driver") ? Role.DRIVER : Role.RIDER;
 
                 // Convert birthDate string to Date
-                String birthDate = null;
+                String birthDate;
                 try {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     Date date = sdf.parse(birthDateString); // Parse string → Date
@@ -111,16 +106,19 @@ public class RegisterActivity extends AppCompatActivity {
 
                 // Create user data object
                 User user = new User(firstName, lastName, email, phoneNumber, cin, password, gender, birthDate, role);
+                Log.d("DATE", "error: " + user.toString()); // Verify output
 
 
                 // Send data to the server
-                Call<Void > call = apiService.registerUser(user);
-                call.enqueue(new Callback<Void >() {
+                LoginApi api = ApiClient.getLoginApi(getApplicationContext());
+                Call<Void > call = api.registerUser(user);
+                call.enqueue(new Callback<>() {
                     @Override
 
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
                             Toast.makeText(RegisterActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
+
                             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                             startActivity(intent);
                         } else {

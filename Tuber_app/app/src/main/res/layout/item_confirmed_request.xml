@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="4dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#E0E0E0">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Profile Image -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/passengerImage"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/CircularImageView"
+            app:strokeWidth="2dp"
+            app:strokeColor="#4CAF50" />
+
+        <!-- Passenger Name -->
+        <TextView
+            android:id="@+id/passengerName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Wessim Benna"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#212121"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toEndOf="@id/passengerImage"
+            app:layout_constraintEnd_toStartOf="@id/actionsLayout"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Phone Number -->
+        <LinearLayout
+            android:id="@+id/phoneLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="@id/passengerName"
+            app:layout_constraintTop_toBottomOf="@id/passengerName"
+            android:layout_marginTop="8dp">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_phone"
+                app:tint="#5C6BC0" />
+
+            <TextView
+                android:id="@+id/phoneNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="24601218"
+                android:textSize="14sp"
+                android:textColor="#5D4037"
+                android:layout_marginStart="8dp"
+                android:maxLines="1"
+                android:ellipsize="end" />
+        </LinearLayout>
+
+        <!-- Seats Info -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/seatsChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2 Seats"
+            android:textSize="12sp"
+            android:textColor="#FFFFFF"
+            app:chipBackgroundColor="#FF5722"
+            app:chipIcon="@drawable/ic_seat"
+            app:chipIconTint="#FFFFFF"
+            app:layout_constraintStart_toStartOf="@id/phoneLayout"
+            app:layout_constraintTop_toBottomOf="@id/phoneLayout"
+            android:layout_marginTop="8dp" />
+
+        <!-- Actions Layout -->
+        <LinearLayout
+            android:id="@+id/actionsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <!-- Call Button -->
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/callButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:fabSize="mini"
+                app:tint="#FFFFFF"
+                android:src="@drawable/ic_call"
+                app:backgroundTint="#4CAF50"
+                android:contentDescription="Call passenger" />
+
+            <!-- Cancel Button -->
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/cancelButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fabSize="mini"
+                app:tint="#FFFFFF"
+                android:src="@drawable/ic_cancel"
+                app:backgroundTint="#F44336"
+                android:contentDescription="Cancel ride" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
