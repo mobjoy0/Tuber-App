@@ -84,10 +84,26 @@ public class BookingController {
                                                 @RequestParam int bookingId,
                                                 @RequestParam @NotBlank String bookingStatus){
         try {
+
             Booking booking = bookingService.getBookingById(bookingId);
+            if (booking.getStatus() == Booking.BookingStatus.CONFIRMED && bookingStatus.equals("CANCELED")) {
+                bookingService.cancelBooking(booking);
+                return ResponseEntity.ok("Booking "+bookingStatus+ " successfully");
+
+            } else if (booking.getStatus() == Booking.BookingStatus.PENDING && bookingStatus.equals("CANCELED")) {
+                bookingService.changeBookingStatus(booking, bookingStatus);
+                return ResponseEntity.ok("Booking "+bookingStatus+ " successfully");
+            } else if (booking.getStatus() == Booking.BookingStatus.CANCELED && bookingStatus.equals("CANCELED")) {
+                System.out.println("already canceled");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("Ride already canceled");
+            }
+
+
             String email = jwtService.extractEmailFromToken(authHeader);
             User user = userService.getUserByEmail(email)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
+
 
             if (!user.getId().equals(booking.getRide().getDriver().getId())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -96,7 +112,7 @@ public class BookingController {
             if (bookingStatus.equals("CONFIRMED")){
                 rideService.reserveSeats(booking.getRide().getId(), booking.getSeatsBooked());
             }
-            bookingService.changeBookingStatus(bookingId, bookingStatus);
+            bookingService.changeBookingStatus(booking, bookingStatus);
             return ResponseEntity.ok("Booking "+bookingStatus+ " successfully");
         } catch (RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());

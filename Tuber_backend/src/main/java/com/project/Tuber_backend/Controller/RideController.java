@@ -1,9 +1,11 @@
 package com.project.Tuber_backend.Controller;
 
 
+import com.project.Tuber_backend.entity.rideEntities.Booking;
 import com.project.Tuber_backend.entity.rideEntities.Ride;
 import com.project.Tuber_backend.entity.userEntities.User;
 import com.project.Tuber_backend.repository.RideRepo;
+import com.project.Tuber_backend.service.BookingService;
 import com.project.Tuber_backend.service.JwtService;
 import com.project.Tuber_backend.service.RideService;
 import com.project.Tuber_backend.service.UserService;
@@ -28,12 +30,14 @@ public class RideController {
     private final RideRepo rideRepo;
     private final JwtService jwtService;
     private final UserService userService;
+    private final BookingService bookingService;
 
-    public RideController(RideService rideService, RideRepo rideRepo, UserService userService, JwtService jwtService) {
+    public RideController(RideService rideService, RideRepo rideRepo, UserService userService, JwtService jwtService, BookingService bookingService) {
         this.rideService = rideService;
         this.rideRepo = rideRepo;
         this.userService = userService;
         this.jwtService = jwtService;
+        this.bookingService = bookingService;
     }
 
     @PostMapping("/create")
@@ -75,9 +79,17 @@ public class RideController {
 
     }
 
-    @PutMapping("/change-status/{id}/{status}")
-    public ResponseEntity<String> changeRideStatus(@PathVariable int id, @PathVariable String status){
-        rideService.changeRideStatus(id, status);
+
+
+
+    @PutMapping("/change-status/{status}")
+    public ResponseEntity<String> changeRideStatus(@RequestHeader("Authorization") String authHeader, @PathVariable String status){
+        String email = jwtService.extractEmailFromToken(authHeader);
+        User user = userService.getUserByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
+
+        Ride ride = rideService.getScheduledRideByDriverId(user.getId());
+        rideService.changeRideStatus(ride.getId(), status);
         return ResponseEntity.ok("Ride "+status+ " successfully");
     }
 

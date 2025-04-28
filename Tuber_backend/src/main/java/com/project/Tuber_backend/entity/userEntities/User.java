@@ -76,6 +76,9 @@ public class User implements UserDetails {
     @NotNull(message = "Role is required")
     private Role role;
 
+    @Column(name = "verification_code")
+    private String verificationCode;
+
     @Lob
     @Column(name = "user_image")
     private byte[] userImage;
@@ -133,25 +136,34 @@ public class User implements UserDetails {
 
     public ResponseEntity<String> updateUserInfo(User updatedUserDetails){
 
-        if (updatedUserDetails.getEmail() != null) {
-            email = updatedUserDetails.getEmail();
-        }
-        if (updatedUserDetails.getUserImage() != null) {
-            userImage = updatedUserDetails.getUserImage();
-        }
 
         if (updatedUserDetails.getPhoneNumber() != null) {
             String newPhoneNumber = updatedUserDetails.getPhoneNumber();
 
-            if (newPhoneNumber.length() != 10) {
+            if (newPhoneNumber.length() != 8) {
                 return ResponseEntity.status(400).body("Phone number must be 10 digits");
             }
             // Check if the phone number contains only digits
             if (!newPhoneNumber.matches("\\d{10}")) {
                 return ResponseEntity.status(400).body("Phone number cant contain characters");
             }
-            // Update the phone number
             phoneNumber = updatedUserDetails.getPhoneNumber();
+        }
+
+        if (updatedUserDetails.getFirstName() != null) {
+            String newFirstName = updatedUserDetails.getFirstName();
+            if (newFirstName.length() < 2 || newFirstName.length() > 45) {
+                return ResponseEntity.status(400).body("First name must be between 2 and 45 characters");
+            }
+            firstName = updatedUserDetails.getFirstName();
+        }
+
+        if (updatedUserDetails.getLastName() != null) {
+            String newLastName = updatedUserDetails.getLastName();
+            if (newLastName.length() < 2 || newLastName.length() > 45) {
+                return ResponseEntity.status(400).body("Last name must be between 2 and 45 characters");
+            }
+            lastName = updatedUserDetails.getLastName();
         }
 
         return ResponseEntity.ok().body("User updated successfully");

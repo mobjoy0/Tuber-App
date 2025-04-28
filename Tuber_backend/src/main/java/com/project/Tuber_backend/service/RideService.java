@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
+import java.awt.image.VolatileImage;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,14 +27,27 @@ public class RideService {
         this.restTemplate = restTemplate;
     }
 
-    public Ride createRide(Ride ride) {
+    public void createRide(Ride ride) {
 
         if (!Driver.canDriverCreateNewRide(ride.getDriver().getId(), ride.getDepartureTime(), rideRepo) || !Driver.isDriver(ride.getDriver())) {
             throw new RuntimeException("an Error gas occurred while trying to create the ride.");
         }
         //ride.setRouteAndDistanceAndETA(restTemplate);
 
-        return rideRepo.save(ride);
+        rideRepo.save(ride);
+    }
+
+    @Transactional
+    public void addCanceledSeats(int id, int seats) {
+        Optional<Ride> rideOptional = rideRepo.findRidesById(id);
+        if (rideOptional.isPresent()) {
+            Ride ride = rideOptional.get();
+            ride.setAvailableSeats(ride.getAvailableSeats() + seats);
+            System.out.println("Available seats: " + ride.getAvailableSeats());
+            rideRepo.save(ride);
+        } else {
+            throw new RuntimeException("Ride not found!");
+        }
     }
 
     @Transactional
@@ -77,6 +91,12 @@ public class RideService {
     public Optional<Ride> getRideByDriverIdAndStatus(int driverId, Ride.RideStatus status) {
         return rideRepo.findRidesByDriverIdAndStatus(driverId, status);
     }
+
+    public Ride getScheduledRideByDriverId(int driverId) {
+        return rideRepo.findRideBydriverIdAndStatus(driverId, Ride.RideStatus.SCHEDULED)
+                .orElseThrow(() -> new RuntimeException("No scheduled ride found for this driver!"));
+    }
+
 
     public List<Ride> getRidesByDriverId(int driverId) {
         return rideRepo.findRidesByDriverId(driverId);

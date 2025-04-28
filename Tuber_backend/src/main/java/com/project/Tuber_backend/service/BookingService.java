@@ -5,6 +5,7 @@ import com.project.Tuber_backend.entity.rideEntities.Booking;
 import com.project.Tuber_backend.repository.BookingRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,8 +32,7 @@ public class BookingService {
         bookingRepo.save(booking);
     }
 
-    public void changeBookingStatus(int id, String status) {
-        Booking booking = bookingRepo.findBookingById(id);
+    public void changeBookingStatus(Booking booking, String status) {
         if (booking != null) {
             if (status.equals("CONFIRMED")){
 
@@ -52,14 +52,17 @@ public class BookingService {
         }
     }
 
-    public void cancelBooking(int id) {
-        Booking booking = bookingRepo.findBookingById(id);
+    public void cancelBooking(Booking booking) {
         if (booking != null) {
-            bookingRepo.delete(booking);
+            booking.setStatus(Booking.BookingStatus.CANCELED);
+            rideService.addCanceledSeats(booking.getRide().getId(), booking.getSeatsBooked());
+            bookingRepo.save(booking);
         } else {
             throw new RuntimeException("Booking not found!");
         }
     }
+
+
 
     public Booking getBookingById(int id) {
         return bookingRepo.findBookingById(id);

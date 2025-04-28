@@ -2,6 +2,7 @@ package com.project.Tuber_backend.Controller;
 
 import com.project.Tuber_backend.entity.userEntities.LoginRequest;
 import com.project.Tuber_backend.entity.userEntities.LoginResponse;
+import com.project.Tuber_backend.entity.userEntities.ResetRequest;
 import com.project.Tuber_backend.entity.userEntities.User;
 import com.project.Tuber_backend.repository.UserRepo;
 import com.project.Tuber_backend.service.EmailService;
@@ -42,9 +43,6 @@ public class AuthController {
         );
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
         User user = userService.getExistingUserByEmail(request.getEmail());
-
-        System.out.println("user="+userDetails);
-        System.out.println("emaim="+userDetails.getUsername());
         String jwt = jwtService.generateToken(userDetails);
 
         LoginResponse response = new LoginResponse(jwt, user);
@@ -61,6 +59,33 @@ public class AuthController {
         }
     }
 
+    @PatchMapping("/reset-password")
+    public ResponseEntity<String> changePassword(@RequestBody ResetRequest request) {
+        // Retrieve user by email
+        Optional<User> userOpt = userService.getUserByEmail(request.getEmail());
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+
+            // Validate the new password (length check, etc.)
+            if (isValidPassword(request.getNewPassword())) {
+                user.changePassword(request.getNewPassword());
+                userService.save(user);
+
+                return ResponseEntity.ok("Password changed successfully!");
+            } else {
+                return ResponseEntity.badRequest().body("Invalid password format.");
+            }
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    private boolean isValidPassword(String password) {
+        return password != null && password.length() >= 8;
+    }
+
+
     @PostMapping("/send-verification-code")
     public ResponseEntity<String> sendVerificationCode(@RequestParam String email) {
         Optional<User> optionalUser = userRepo.findByEmail(email);
@@ -76,6 +101,7 @@ public class AuthController {
         userRepo.save(user);
 
         emailService.sendVerificationEmail(user.getEmail(), code);
+        System.out.println("verification email sent to " + user.getEmail());
 
         return ResponseEntity.ok("Verification code sent to " + user.getEmail());
     }

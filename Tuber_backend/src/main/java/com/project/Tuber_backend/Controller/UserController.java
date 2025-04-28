@@ -1,5 +1,6 @@
 package com.project.Tuber_backend.Controller;
 
+import com.project.Tuber_backend.entity.userEntities.ResetRequest;
 import com.project.Tuber_backend.entity.userEntities.User;
 import com.project.Tuber_backend.service.JwtService;
 import com.project.Tuber_backend.service.UserService;
@@ -62,24 +63,31 @@ public class UserController {
         return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     }
 
-    @PatchMapping("/profile/change-password")
-    public ResponseEntity<String> changePassword(@RequestHeader("Authorization") String authHeader,
-                                                 @RequestBody String newPassword) {
-
+    @PatchMapping("/reset-email")
+    public ResponseEntity<String> changeEmail(@RequestHeader("Authorization") String authHeader,
+                                                 @RequestBody ResetRequest request) {
         String email = jwtService.extractEmailFromToken(authHeader);
         Optional<User> userOpt = userService.getUserByEmail(email);
 
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            user.changePassword(newPassword);
-            userService.save(user);
-            return ResponseEntity.ok("Password changed successfully!");
+
+            if (request.isValidEmail()) {
+                user.setEmail(request.getEmail());
+                userService.save(user);
+
+                return ResponseEntity.ok("Email changed successfully!");
+            } else {
+                return ResponseEntity.badRequest().body("Invalid email format.");
+            }
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping("/profile/image/upload")
+
+
+    @PostMapping("/profile/upload")
     public ResponseEntity<String> changeProfilePic(
             @RequestHeader("Authorization") String authHeader,
             @RequestParam("image") MultipartFile file) {
@@ -95,8 +103,9 @@ public class UserController {
             User user = userOpt.get();
             user.setUserImage(file.getBytes());
             userService.save(user);
+            System.out.println("image uploaded");
 
-            return ResponseEntity.ok("Profile picture updated successfully!");
+            return ResponseEntity.ok(null);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload");
         }

@@ -19,6 +19,8 @@ public interface RideRepo extends JpaRepository<Ride, Integer> {
 
     Optional<Ride> findRidesByDriverIdAndStatus(int driver, Ride.RideStatus status);
 
+    Optional<Ride> findRideBydriverIdAndStatus(int driverId, Ride.RideStatus status);
+
     @Query("SELECT r FROM Ride r WHERE "
             + "r.status = 'SCHEDULED' AND "
             + "r.availableSeats > 0 AND "
@@ -38,6 +40,8 @@ public interface RideRepo extends JpaRepository<Ride, Integer> {
 
     @Query("SELECT r FROM Ride r WHERE r.status = 'SCHEDULED'")
     List<Ride> findAnyScheduledRides();
+
+
 
 
 
