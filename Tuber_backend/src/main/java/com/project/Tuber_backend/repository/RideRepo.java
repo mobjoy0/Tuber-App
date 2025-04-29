@@ -21,6 +21,10 @@ public interface RideRepo extends JpaRepository<Ride, Integer> {
 
     Optional<Ride> findRideBydriverIdAndStatus(int driverId, Ride.RideStatus status);
 
+    @Query("SELECT r FROM Ride r WHERE r.departureTime > CURRENT_TIMESTAMP AND r.status = 'SCHEDULED'")
+    List<Ride> findUpcomingRides();
+
+
     @Query("SELECT r FROM Ride r WHERE "
             + "r.status = 'SCHEDULED' AND "
             + "r.availableSeats > 0 AND "

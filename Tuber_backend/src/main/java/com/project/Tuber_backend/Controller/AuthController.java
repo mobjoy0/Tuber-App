@@ -88,10 +88,11 @@ public class AuthController {
 
     @PostMapping("/send-verification-code")
     public ResponseEntity<String> sendVerificationCode(@RequestParam String email) {
+        System.out.println(email);
         Optional<User> optionalUser = userRepo.findByEmail(email);
 
         if (optionalUser.isEmpty()) {
-            return ResponseEntity.status(404).body("User not found");
+            return ResponseEntity.status(404).body("User not found ");
         }
 
         User user = optionalUser.get();

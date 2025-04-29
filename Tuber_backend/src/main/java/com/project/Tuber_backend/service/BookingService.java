@@ -2,6 +2,8 @@ package com.project.Tuber_backend.service;
 
 
 import com.project.Tuber_backend.entity.rideEntities.Booking;
+import com.project.Tuber_backend.entity.rideEntities.Ride;
+import com.project.Tuber_backend.entity.userEntities.User;
 import com.project.Tuber_backend.repository.BookingRepo;
 import org.springframework.stereotype.Service;
 
@@ -61,6 +63,26 @@ public class BookingService {
             throw new RuntimeException("Booking not found!");
         }
     }
+
+    public List<Booking> getBookingHistory(User user) {
+        // Fetch all completed bookings
+        List<Booking> completedBookings = bookingRepo.findBookingsByPassengerIdAndStatus(user.getId(), Booking.BookingStatus.COMPLETED);
+
+        // Fetch all pending bookings
+        List<Booking> pendingBookings = bookingRepo.findBookingsByPassengerIdAndStatus(user.getId(), Booking.BookingStatus.PENDING);
+
+        // Combine both lists
+        List<Booking> allBookings = new ArrayList<>();
+        allBookings.addAll(completedBookings);
+        allBookings.addAll(pendingBookings);
+
+        return allBookings;
+    }
+
+    public boolean canBookRide(Booking booking) {
+        return rideService.findRideByDriverId(booking.getRide().getDriver().getId()) == null;
+    }
+
 
 
 

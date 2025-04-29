@@ -49,8 +49,13 @@ public class BookingController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body("You can only book rides yourself");
             }
-            bookingService.createBooking(booking);
-            return ResponseEntity.ok("Booking created successfully!");
+            if (bookingService.canBookRide(booking)){
+                System.out.println("Booking is already booked");
+                bookingService.createBooking(booking);
+                return ResponseEntity.ok("Booking created successfully!");
+            }else {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            }
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

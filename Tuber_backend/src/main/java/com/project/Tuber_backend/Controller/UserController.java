@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -23,8 +24,6 @@ public class UserController {
         this.userService = userService;
         this.jwtService = jwtService;
     }
-
-
 
     @GetMapping("/profile")
     public ResponseEntity<User> getUserProfile(@RequestHeader("Authorization") String authHeader) {
@@ -40,6 +39,9 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+
+
+
 
     @PutMapping("/profile/update")
     public ResponseEntity<String> updateUserProfile(
@@ -62,6 +64,8 @@ public class UserController {
         }
         return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     }
+
+
 
     @PatchMapping("/reset-email")
     public ResponseEntity<String> changeEmail(@RequestHeader("Authorization") String authHeader,

@@ -1,6 +1,7 @@
 package com.project.Tuber_backend.Controller;
 
 
+import com.project.Tuber_backend.apis.GoogleMapsApi;
 import com.project.Tuber_backend.entity.rideEntities.Booking;
 import com.project.Tuber_backend.entity.rideEntities.Ride;
 import com.project.Tuber_backend.entity.userEntities.User;
@@ -11,7 +12,6 @@ import com.project.Tuber_backend.service.RideService;
 import com.project.Tuber_backend.service.UserService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -68,7 +68,6 @@ public class RideController {
                                                   @RequestParam(defaultValue = "24") @Positive int hoursOffset,
                                                   @RequestParam(required = false) @Positive BigDecimal maxPrice) {
         try {
-            System.out.println("here");
             List<Ride> rides = rideService.getAvailableRides(origin, destination, departureTime, hoursOffset, maxPrice);
             return ResponseEntity.ok(rides);
         } catch (Exception e) {
@@ -78,6 +77,19 @@ public class RideController {
 
 
     }
+
+    @GetMapping("/recommendations")
+    public ResponseEntity<List<Ride>> getRideRecommendations(@RequestHeader("Authorization") String authHeader) {
+        // Extract user email from token
+        String email = jwtService.extractEmailFromToken(authHeader);
+        User user = userService.getUserByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
+
+        List<Ride> rides = rideService.getRideRecommendations(user);
+
+        return ResponseEntity.ok(rides);
+    }
+
 
 
 
