@@ -5,12 +5,12 @@ import android.content.Context;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@androidx.room.Database(entities = {UserEntity.class, RideHistory.class}, version = 2)
+@androidx.room.Database(entities = {UserEntity.class, Location.class}, version = 6)
 public abstract class Database extends RoomDatabase {
     public static volatile Database instance;
 
     public  abstract UserDao userDao();
-    public  abstract RideHistoryDao rideHistoryDao();
+    public  abstract LocationsDao locationsDao();
 
 
     public static Database getInstance(Context context) {

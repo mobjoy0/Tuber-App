@@ -16,12 +16,18 @@ import com.project.tuber_app.fragments.*;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private Fragment currentFragment = null; // Track the currently displayed fragment
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Hide the action bar
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
         // Set status bar color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -40,22 +46,28 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_home) {
-                loadFragment(new HomeFragment());
+                if (!(currentFragment instanceof HomeFragment)) {
+                    loadFragment(new HomeFragment());
+                }
                 return true;
             } else if (itemId == R.id.nav_track) {
-                loadFragment(new BookingFragment());
+                if (!(currentFragment instanceof BookingFragment)) {
+                    loadFragment(new BookingFragment());
+                }
                 return true;
             } else if (itemId == R.id.nav_profile) {
-                loadFragment(new HomeFragment());
+                if (!(currentFragment instanceof SettingsFragment)) {
+                    loadFragment(new SettingsFragment());
+                }
                 return true;
             } else {
                 return false;
             }
         });
-
     }
 
     private void loadFragment(Fragment fragment) {
+        currentFragment = fragment; // Update the current fragment
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frameLayout, fragment)
                 .commit();

@@ -8,7 +8,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    private static final String BASE_URL = "https://b3e1-197-15-78-176.ngrok-free.app/api/";
+    private static final String BASE_URL = "https://b5e3-102-109-27-78.ngrok-free.app/api/";
 
     private static Retrofit retrofit = null;
     private static OkHttpClient client = null;
@@ -22,7 +22,7 @@ public class ApiClient {
                 // Uncomment this if you want to see request/response logs
 
                 HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-                logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+                logging.setLevel(HttpLoggingInterceptor.Level.NONE);
                 clientBuilder.addInterceptor(logging);
 
 

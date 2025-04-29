@@ -47,8 +47,8 @@ public class BookingRequestAdapter extends RecyclerView.Adapter<BookingRequestAd
         holder.departureLocation.setText(booking.getRide().getStartLocation());
         holder.destinationLocation.setText(booking.getRide().getEndLocation());
         holder.seatsRequested.setText(String.valueOf(booking.getSeatsBooked()));
-        holder.departureTime.setText(booking.getRide().getDepartureTime());
-        holder.arrivalTime.setText(booking.getRide().getDepartureTime());
+        holder.departureTime.setText(booking.getRide().getRideTime());
+        holder.arrivalTime.setText(booking.getRide().getRideEndTime());
 
         holder.btnReject.setOnClickListener(v -> {
             if (listener != null) listener.onReject(booking);

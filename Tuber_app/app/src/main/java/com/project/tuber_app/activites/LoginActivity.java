@@ -11,10 +11,12 @@ import com.project.tuber_app.entities.User;
 
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import retrofit2.Call;
@@ -24,13 +26,14 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import android.content.Intent;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class LoginActivity extends AppCompatActivity {
     EditText emailEditText, passwordEditText;
     Button loginButton;
-    ApiClient apiClient;
+    TextView forgotPasswordText;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Override
@@ -38,10 +41,19 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // Hide the action bar
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+        SharedPreferences sharedPreferences = getSharedPreferences("auth", MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
+
+
         // Initialize UI elements
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         loginButton = findViewById(R.id.loginButton);
+        forgotPasswordText = findViewById(R.id.forgotPasswordText);
 
 
 
@@ -58,6 +70,12 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+        forgotPasswordText.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, CodeVerificationActivity.class);
+            intent.putExtra("actionType", "RESET_PASSWORD"); // Pass actionType
+            startActivity(intent);  // Start the activity
+        });
+
         Button createAccountButton = findViewById(R.id.createAccountButton);
         createAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     String token = response.body().getToken();
                     User user = response.body().getUser();
+                    Log.e("ee" , "user pic = "+ Arrays.toString(user.getUserImage()));
 
                     Log.d("Login", "Token: " + token);
                     Log.d("Login", "UserID: " + user.getId());
@@ -98,6 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                     executorService.submit(() -> {
                         try {
                             userDao.clearUsers();
+
                             userDao.insertUser(userEntity);
                             Log.d("RoomInsert", "User inserted successfully");
                             runOnUiThread(() -> {

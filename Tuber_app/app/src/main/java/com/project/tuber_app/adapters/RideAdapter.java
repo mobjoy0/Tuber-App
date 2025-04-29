@@ -1,5 +1,6 @@
 package com.project.tuber_app.adapters;
 
+import android.icu.text.SimpleDateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.project.tuber_app.R;
 import com.project.tuber_app.entities.Ride;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class RideAdapter extends RecyclerView.Adapter<RideAdapter.RideViewHolder> {
 
@@ -45,11 +48,23 @@ public class RideAdapter extends RecyclerView.Adapter<RideAdapter.RideViewHolder
 
             holder.departureStation.setText(ride.getStartLocation());
             holder.arrivalStation.setText(ride.getEndLocation());
-            holder.duration.setText(String.valueOf(ride.getEta()));
-            holder.departureTime.setText(ride.getDepartureTime());
-            holder.arrivalTime.setText(String.valueOf(ride.getDepartureTime()));
+            holder.duration.setText(String.valueOf(ride.getRideDuration()));
+            holder.departureTime.setText(ride.getRideTime());
+            holder.arrivalTime.setText(String.valueOf(ride.getRideEndTime()));
             holder.seatAvailability.setText(String.valueOf(ride.getAvailableSeats()));
             holder.price.setText(ride.getPrice() + "dt");
+
+            // Format the date from yyyy-MM-dd to Wed, Apr 23
+            String rideDateStr = ride.getRideDate();
+            SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            try {
+                Date rideDate = originalFormat.parse(rideDateStr);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM dd", Locale.getDefault());
+                String formattedDate = dateFormat.format(rideDate);
+                holder.tvDate.setText(formattedDate);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             // 3. Set up click event
             holder.layout.setOnClickListener(v -> {
@@ -71,7 +86,7 @@ public class RideAdapter extends RecyclerView.Adapter<RideAdapter.RideViewHolder
     static class RideViewHolder extends RecyclerView.ViewHolder {
         TextView departureTime, departureStation,
                 arrivalTime, arrivalStation, duration,
-                seatAvailability, price;
+                seatAvailability, price, tvDate;
         ConstraintLayout layout;
 
 
@@ -85,6 +100,7 @@ public class RideAdapter extends RecyclerView.Adapter<RideAdapter.RideViewHolder
             seatAvailability = itemView.findViewById(R.id.tvSeats);
             price = itemView.findViewById(R.id.tvPrice);
             layout = itemView.findViewById(R.id.layoutView);
+            tvDate = itemView.findViewById(R.id.tvDate);
         }
     }
 }

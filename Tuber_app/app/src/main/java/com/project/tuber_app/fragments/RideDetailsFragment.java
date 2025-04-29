@@ -68,9 +68,9 @@ public class RideDetailsFragment extends Fragment {
             try {
                 fromText.setText(selectedRide.getStartLocation());
                 toText.setText(selectedRide.getEndLocation());
-                departureTimeText.setText(selectedRide.getDepartureTime());
-                arrivalTimeText.setText(selectedRide.getDepartureTime());
-                rideTimeText.setText("1h");
+                departureTimeText.setText(selectedRide.getRideTime());
+                arrivalTimeText.setText(selectedRide.getRideEndTime());
+                rideTimeText.setText(selectedRide.getRideDuration());
                 distanceText.setText(selectedRide.getDistance() + "km");
 
                 // Setup seat picker

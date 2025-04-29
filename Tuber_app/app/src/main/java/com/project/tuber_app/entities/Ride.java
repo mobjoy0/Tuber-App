@@ -3,6 +3,9 @@ package com.project.tuber_app.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Ride implements Parcelable {
     private int id;
     private User driver;
@@ -10,6 +13,7 @@ public class Ride implements Parcelable {
     private String endLocation;
     private String departureTime; // Use String to avoid time parsing issues
     private int availableSeats;
+    private int totalSeats;
     private double price;
     private int eta;
     private int distance;
@@ -37,6 +41,70 @@ public class Ride implements Parcelable {
         this.endLocation = endLocation;
         this.price = price;
     }
+    public void setTotalSeats(int totalSeats){
+        this.totalSeats = totalSeats;
+    }
+
+    public int getTotalSeats(){
+        return totalSeats;
+    }
+
+    public String getRideDate() {
+        if (departureTime != null && departureTime.contains("T")) {
+            return departureTime.split("T")[0];
+        }
+        return "";
+    }
+
+
+    public String getRideTime() {
+        if (departureTime != null && departureTime.contains("T")) {
+            String timePart = departureTime.split("T")[1];
+            if (timePart.length() >= 5) {
+                return timePart.substring(0,5); // Only return HH:mm
+            }
+            return timePart;
+        }
+        return "";
+    }
+
+
+    public String getRideEndTime() {
+        if (departureTime != null && departureTime.contains("T")) {
+            try {
+                // Parse the departureTime string to LocalDateTime
+                LocalDateTime departureDateTime = LocalDateTime.parse(departureTime);
+
+                // Add eta (minutes)
+                LocalDateTime endDateTime = departureDateTime.plusMinutes(eta);
+
+                // Format to only show time (HH:mm)
+                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+                String formattedTime = endDateTime.format(timeFormatter);
+
+                // Check if it's the next day
+                if (endDateTime.getDayOfMonth() != departureDateTime.getDayOfMonth()) {
+                    formattedTime += " +1d";
+                }
+
+                return formattedTime;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "";
+            }
+        }
+        return "";
+    }
+
+
+    public String getRideDuration() {
+        int hours = eta / 60;
+        int minutes = eta % 60;
+        return String.format("%02d:%02d", hours, minutes);
+    }
+
+
 
     public int getId() {
         return id;

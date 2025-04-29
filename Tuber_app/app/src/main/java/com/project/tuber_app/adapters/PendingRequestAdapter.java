@@ -5,11 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.project.tuber_app.R;
 import com.project.tuber_app.entities.Booking;
 
@@ -46,6 +48,11 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestAd
             holder.seatsBooked.setText(String.valueOf(booking.getSeatsBooked()));
             holder.phoneNumber.setText(booking.getPassenger().getPhoneNumber());
 
+            Glide.with(holder.itemView.getContext())
+                    .load(booking.getPassenger().getUserImage())
+                    .placeholder(R.drawable.ic_person)
+                    .into(holder.passengerImage);
+
             holder.acceptButton.setVisibility(View.VISIBLE);
             holder.rejectButton.setVisibility(View.VISIBLE);
 
@@ -66,6 +73,7 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestAd
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView passengerName, seatsBooked, phoneNumber;
         ImageButton acceptButton, rejectButton;
+        ImageView passengerImage;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -74,6 +82,7 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestAd
             phoneNumber = itemView.findViewById(R.id.phoneNumber);
             acceptButton = itemView.findViewById(R.id.btnAccept);
             rejectButton = itemView.findViewById(R.id.btnReject);
+            passengerImage = itemView.findViewById(R.id.passengerImage);
         }
     }
 }

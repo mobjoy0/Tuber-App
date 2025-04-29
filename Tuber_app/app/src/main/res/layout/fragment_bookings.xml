@@ -6,6 +6,17 @@
     android:orientation="vertical"
     android:background="@color/background_light">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:visibility="visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="200dp"
+        android:layout_gravity="center"
+        android:indeterminate="true" />
+
+
     <TextView
         android:id="@+id/nothingTv"
         android:layout_width="match_parent"
@@ -15,6 +26,29 @@
         android:gravity="center"
         android:visibility="gone"
         android:text="Nothing to show."/>
+
+    <LinearLayout
+        android:id="@+id/createLayout"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="26sp"
+            android:text="Nothing going on"
+            android:textStyle="bold"/>
+        <Button
+            android:id="@+id/btnCreateRide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create a ride"
+            android:textStyle="bold"
+            android:textSize="20sp"/>
+    </LinearLayout>
 
     <!-- Pending Bookings Section -->
     <LinearLayout
@@ -343,6 +377,31 @@
 
             android:orientation="vertical"
             android:padding="16dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_clock"
+                    app:tint="@color/primary"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/rideHubcountdownText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="01:24:37"
+                    android:textColor="@color/primary"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
             <!-- Confirmed Passengers -->
             <TextView
@@ -388,6 +447,24 @@
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 android:paddingBottom="8dp" />
+            <Button
+                android:id="@+id/startRideButton"
+                android:visibility="gone"
+                android:textSize="25sp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Start ride"/>
+
+
+            <Button
+                android:id="@+id/cancelRideDriver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:backgroundTint="@color/cherry_red"
+                android:text="Cancel ride"
+                android:textSize="25sp" />
         </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 </LinearLayout>

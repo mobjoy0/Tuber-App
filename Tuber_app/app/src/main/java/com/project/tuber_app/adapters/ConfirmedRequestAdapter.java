@@ -3,11 +3,13 @@ package com.project.tuber_app.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.project.tuber_app.R;
 import com.project.tuber_app.entities.Booking;
 
@@ -35,7 +37,14 @@ public class ConfirmedRequestAdapter extends RecyclerView.Adapter<ConfirmedReque
         holder.passengerName.setText(booking.getPassenger().getFirstName() + " " + booking.getPassenger().getLastName());
         holder.seatsBooked.setText(String.valueOf(booking.getSeatsBooked()));
         holder.phoneNumber.setText(booking.getPassenger().getPhoneNumber());
+
+        // Correct Glide usage
+        Glide.with(holder.itemView.getContext())
+                .load(booking.getPassenger().getUserImage())
+                .placeholder(R.drawable.ic_person)
+                .into(holder.passengerImage);
     }
+
 
     @Override
     public int getItemCount() {
@@ -44,12 +53,14 @@ public class ConfirmedRequestAdapter extends RecyclerView.Adapter<ConfirmedReque
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView passengerName, seatsBooked, phoneNumber;
+        ImageView passengerImage;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             passengerName = itemView.findViewById(R.id.passengerName);
             seatsBooked = itemView.findViewById(R.id.seatsChip);
             phoneNumber = itemView.findViewById(R.id.phoneNumber);
+            passengerImage = itemView.findViewById(R.id.passengerImage);
         }
     }
 }

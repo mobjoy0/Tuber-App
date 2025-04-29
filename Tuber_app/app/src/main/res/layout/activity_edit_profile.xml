@@ -30,32 +30,148 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/ivProfilePicture"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="24dp"
-                android:background="@android:color/darker_gray"
-                android:scaleType="centerCrop"
-                app:shapeAppearanceOverlay="@style/CircleImageView"/>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabEditPicture"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="-50dp"
-                android:layout_marginStart="30dp"
-                android:backgroundTint="@color/primary"
-                app:fabSize="mini"
-                app:tint="@android:color/white"
-                android:src="@drawable/ic_plus" />
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/ivProfilePicture"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@android:color/darker_gray"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/CircleImageView"/>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabEditPicture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-28dp"
+                    android:layout_marginStart="40dp"
+                    android:backgroundTint="@color/primary"
+                    app:fabSize="mini"
+                    app:tint="@android:color/white"
+                    android:src="@drawable/ic_plus" />
+
+                <!-- Verification Status with Icon -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/ivVerificationStatus"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_verified"
+                        app:tint="@color/primary"/>
+
+                    <TextView
+                        android:id="@+id/tvVerificationStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Verified"
+                        android:textSize="14sp"
+                        android:textColor="@color/primary"
+                        android:layout_marginStart="4dp"/>
+                </LinearLayout>
+
+                <!-- User Role -->
+                <TextView
+                    android:id="@+id/tvUserRole"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Customer"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp"
+                    android:padding="6dp"
+                    android:background="@drawable/role_background"
+                    android:textColor="#555555"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="24dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_card" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="CIN (National ID)"
+                        android:textSize="12sp"
+                        android:textColor="#757575" />
+
+                    <TextView
+                        android:id="@+id/tvCIN"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="AB123456"
+                        android:textSize="16sp"
+                        android:textColor="#212121"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Gender as Text Display -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_gender" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Gender"
+                        android:textSize="12sp"
+                        android:textColor="#757575" />
+
+                    <TextView
+                        android:id="@+id/tvGender"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Male"
+                        android:textSize="16sp"
+                        android:textColor="#212121"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 app:boxBackgroundColor="@android:color/transparent"
                 app:boxStrokeColor="#8A4DFF"
                 android:hint="First Name"
@@ -84,12 +200,13 @@
                     android:inputType="textPersonName"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- CIN as Text Display -->
 
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 app:boxBackgroundColor="@android:color/transparent"
                 app:boxStrokeColor="#8A4DFF"
                 app:startIconDrawable="@drawable/ic_phone"
@@ -102,7 +219,6 @@
                     android:layout_height="wrap_content"
                     android:inputType="phone"/>
             </com.google.android.material.textfield.TextInputLayout>
-
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSaveProfile"

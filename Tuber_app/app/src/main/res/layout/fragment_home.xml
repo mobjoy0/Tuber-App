@@ -38,23 +38,24 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <!-- FROM Field -->
+                <!-- FROM Field with AutoComplete -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/from_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="From"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     app:startIconDrawable="@drawable/ic_departure"
                     app:startIconTint="@color/primary"
                     app:boxStrokeColor="@color/primary"
                     app:hintTextColor="@color/primary">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <AutoCompleteTextView
                         android:id="@+id/from_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="text" />
+                        android:inputType="text"
+                        android:completionThreshold="1" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Connection Line between From and To -->
@@ -86,17 +87,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="To"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         app:startIconDrawable="@drawable/ic_arrival"
                         app:startIconTint="@color/primary"
                         app:boxStrokeColor="@color/primary"
                         app:hintTextColor="@color/primary">
 
-                        <com.google.android.material.textfield.TextInputEditText
+                        <AutoCompleteTextView
                             android:id="@+id/to_input"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="text" />
+                            android:inputType="text"
+                            android:completionThreshold="1" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -114,6 +116,41 @@
                         app:tint="@color/text_secondary" />
                 </RelativeLayout>
 
+                <!-- Date Selection Options -->
+                <RadioGroup
+                    android:id="@+id/date_radio_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp">
+
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/radio_today"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Today"
+                        android:checked="true"
+                        android:buttonTint="@color/primary" />
+
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/radio_tomorrow"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Tomorrow"
+                        android:buttonTint="@color/primary" />
+
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/radio_custom"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Custom"
+                        android:buttonTint="@color/primary" />
+                </RadioGroup>
+
                 <!-- Date Picker -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/date_card"
@@ -123,7 +160,10 @@
                     app:cardElevation="0dp"
                     app:strokeWidth="1dp"
                     app:strokeColor="@color/divider"
-                    android:layout_marginTop="16dp">
+                    android:layout_marginTop="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -144,7 +184,52 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Today, Apr 9"
+                            android:text="Today, Apr 29"
+                            android:textSize="16sp"
+                            android:textColor="@color/text_primary" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_drop_down"
+                            app:tint="@color/text_secondary" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Time Picker -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/time_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/divider"
+                    android:layout_marginTop="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_clock"
+                            app:tint="@color/primary"
+                            android:layout_marginEnd="12dp" />
+
+                        <TextView
+                            android:id="@+id/time_picker"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Now"
                             android:textSize="16sp"
                             android:textColor="@color/text_primary" />
 
@@ -192,8 +277,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"/>
+                android:nestedScrollingEnabled="false" />
 
             <!-- Empty State (initially gone) -->
             <LinearLayout
@@ -202,7 +286,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:padding="32dp">
 
                 <ImageView

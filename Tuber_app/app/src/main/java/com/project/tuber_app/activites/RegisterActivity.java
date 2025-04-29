@@ -37,6 +37,11 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        // Hide the action bar
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         // Initialize UI elements
         firstNameEditText = findViewById(R.id.editTextFirstName);
         lastNameEditText = findViewById(R.id.editTextLastName);
@@ -119,7 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             Toast.makeText(RegisterActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
 
-                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                             startActivity(intent);
                         } else {
                             try {

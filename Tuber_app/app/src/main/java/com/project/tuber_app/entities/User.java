@@ -1,5 +1,8 @@
 package com.project.tuber_app.entities;
 
+import android.util.Base64;
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
 import com.project.tuber_app.databases.UserEntity;
 
@@ -9,32 +12,21 @@ import lombok.ToString;
 public class User {
 
     private Integer id;
-
     private String firstName;
-
-
     private String lastName;
-
     private String email;
-
-
     private String phoneNumber;
-
     private String cin;
-
     private String password;
-
-
     private Gender gender;
-
     private Boolean verified = false;
-
     private String birthDate;
-
-
     private Role role;
 
-    public User(int id){
+    @SerializedName("userImage")
+    private String userImageBase64; // Stored as Base64 string
+
+    public User(int id) {
         this.id = id;
     }
 
@@ -56,7 +48,6 @@ public class User {
         if (userEntity == null) {
             throw new IllegalArgumentException("UserEntity cannot be null");
         }
-
         this.id = userEntity.id;
         this.firstName = userEntity.firstName;
         this.lastName = userEntity.lastName;
@@ -64,14 +55,20 @@ public class User {
         this.phoneNumber = userEntity.phoneNumber;
         this.cin = userEntity.cin;
         this.password = userEntity.password;
-        this.gender = userEntity.gender != null ? User.Gender.valueOf(userEntity.gender.toString()) : null;
+        this.gender = userEntity.gender != null ? Gender.valueOf(userEntity.gender.toString()) : null;
         this.verified = userEntity.verified;
-        this.birthDate = null;
-        this.role = userEntity.role != null ? User.Role.valueOf(userEntity.role.toString()) : null;
-        this.userImage = userEntity.userImage;
+        this.birthDate = null; // Not available in UserEntity
+        this.role = userEntity.role != null ? Role.valueOf(userEntity.role.toString()) : null;
+        this.userImageBase64 = convertTo64(userEntity.userImage);
     }
 
-    @SerializedName("user_image") private byte[] userImage;
+    private String convertTo64(byte[] imageBytes) {
+        if (imageBytes != null) {
+            return Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        }
+        return null;
+    }
+
 
     public enum Gender {
         MALE, FEMALE
@@ -170,11 +167,19 @@ public class User {
     }
 
     public byte[] getUserImage() {
-        return userImage;
+        if (userImageBase64 != null) {
+            try {
+                return Base64.decode(userImageBase64, Base64.DEFAULT);
+            } catch (IllegalArgumentException e) {
+                Log.e("UserImageDecode", "Failed to decode user image: " + e.getMessage());
+                return null;
+            }
+        }
+        return null;
     }
 
-    public void setUserImage(byte[] userImage) {
-        this.userImage = userImage;
+    public void setUserImage(String userImageBase64) {
+        this.userImageBase64 = userImageBase64;
     }
 
     @Override
@@ -186,14 +191,12 @@ public class User {
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", cin='" + cin + '\'' +
-                ", password=" + password+ // Masking password for security
+                ", password=" + password + // Masking password for security
                 ", gender=" + gender +
                 ", verified=" + verified +
                 ", birthDate='" + birthDate + '\'' +
                 ", role=" + role +
-                ", userImage=" + (userImage != null ? "Exists" : "No Image") + // Avoid printing raw bytes
+                ", userImage=" + (userImageBase64 != null ? "Exists" : "No Image") +
                 '}';
     }
-
-
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Tuber_app</string>
+    <string name="app_name">Tuber</string>
 
     <string-array name="passenger_array">
         <item>1 adulte</item>
